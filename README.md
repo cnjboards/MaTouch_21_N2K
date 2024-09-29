@@ -9,3 +9,6 @@ This application is provided as is. It should is used as an example of how conne
 This particular application can be used to display select engine data from an NMEA2000 network.
 
 Since this is a Canbus adapter card, this could also be used in any application using Canbus.
+
+# Build:
+  Before building this application please refer to the READMe file in the "extras" directory.
