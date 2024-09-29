@@ -1,4 +1,4 @@
-# MaTouch_21_NMEA2000
+# MaTouch_21_N2K
 
 <img src="https://github.com/user-attachments/assets/05e210b0-dd9f-49de-a668-e6fabe9b4afe" width="450" height="350">
 
