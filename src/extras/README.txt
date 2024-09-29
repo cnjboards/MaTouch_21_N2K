@@ -1,3 +1,6 @@
+The MaTouch display uses the ESP32-S3 processor. The current NMEA2000-Library does not support ESP32-S3 class of processors directly, we need to add a TWAI driver for this support.
+The files in this directory are the driver files. 
+
 This directory contains extra files that need to be placed in the NMEA2000-library directory.
 Files in this directory are not to be compiled here, but moved to the NMEA2000-library directory and compiled there.
 The files should be moved after the "NMEA2000-library" has been downloaded from github.
