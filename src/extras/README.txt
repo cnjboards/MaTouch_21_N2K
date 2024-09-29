@@ -1,6 +1,6 @@
-This directory contains extra files that need to be placed in the NMEA2000 library directories.
-Files in this directory are not to be compiled here, but moved to thier respective directory and compiled there.
-The file should be moved after the NMEA2000_esp32 library has been downloaded from github.
+This directory contains extra files that need to be placed in the NMEA2000-library directory.
+Files in this directory are not to be compiled here, but moved to the NMEA2000-library directory and compiled there.
+The files should be moved after the "NMEA2000-library" has been downloaded from github.
 
 List of files:
 "NMEA2000_can.h": This file lives in ".pio\libdeps\esp32s3box\NMEA2000-library\src". This replaces the existing version. It has changes to use the new ESP32-S3 TWAI driver files.
