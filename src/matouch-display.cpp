@@ -1,3 +1,4 @@
+#define SERIALDEBUG
 #define USBSerial Serial
 
 #include <Arduino.h>
@@ -208,7 +209,7 @@ static void buildOilGuage();
 static void buildTempGuage();
 static void updateMainScreen(lv_timer_t *);
 static void buildScreenList(lv_obj_t *);
-
+static void listEventHandler(lv_event_t *);
 
 // init lvgl graphics
 void doLvglInit(){
@@ -328,7 +329,7 @@ static void buildScreen1(void) {
   lv_obj_align(Screen1, LV_ALIGN_BOTTOM_MID, 0, 0);
   lv_obj_set_scrollbar_mode(Screen1, LV_SCROLLBAR_MODE_OFF);
   lv_obj_clear_flag(Screen1, LV_OBJ_FLAG_SCROLLABLE);
-
+  
   // Components on screen 1
   buildRPMGuage();
   buildOilGuage();
@@ -426,6 +427,7 @@ void processDisplay(void){
   if ( shortButtonStateLatched == true){
     // reset the latched pb
     shortButtonStateLatched = false;
+    //#if 0
     if (lv_obj_has_flag(screenList, LV_OBJ_FLAG_HIDDEN)){
       // unhide
       lv_obj_clear_flag(screenList, LV_OBJ_FLAG_HIDDEN);  
@@ -433,10 +435,12 @@ void processDisplay(void){
       // hide the list
       lv_obj_add_flag(screenList, LV_OBJ_FLAG_HIDDEN);
     } // end else
+    //#endif
   } // end if
 
   #ifdef SERIALDEBUG
   // debug stuff
+  int x, y;
   if (read_touch(&x, &y) == 1)
   {
     USBSerial.print("Touch ");
@@ -474,7 +478,6 @@ void processDisplay(void){
 
   delay(100);
 } // end processdisplay
-
 
 
 // locate engine rpm guage on the main screen relative to centre of Screen1 object
@@ -672,42 +675,47 @@ static void listEventHandler(lv_event_t * e)
     lv_event_code_t code = lv_event_get_code(e);
     lv_obj_t * obj = lv_event_get_target(e);
     if(code == LV_EVENT_CLICKED) {
-        String selectedItem = String(lv_list_get_btn_text(screenList, obj));
-        Serial.printf("Clicked: %s", selectedItem);
+        //String selectedItem = String(lv_list_get_btn_text(screenList, obj));
+        const char* selectedItem = lv_list_get_btn_text(screenList, obj);
+
+        #ifdef SERIALDEBUG
+          Serial.printf("Clicked: %s", selectedItem);
+        #endif
+
         // close sleceted so just close the screen list
-        if (selectedItem.equalsIgnoreCase("Close")){
+        if (!strcmp(selectedItem,"Close")){
           // hide the list
           lv_obj_add_flag(screenList, LV_OBJ_FLAG_HIDDEN);      
         // screen 1 selected
-        } else if (selectedItem.equalsIgnoreCase(SCREEN_1_NAME)){
+        } else if (!strcmp(selectedItem,SCREEN_1_NAME)){
           // hide the list
           lv_obj_add_flag(screenList, LV_OBJ_FLAG_HIDDEN);
           // activate Engine Screen
           lv_scr_load(Screen1);
           // attach screen list
           lv_obj_set_parent(screenList, Screen1);
-        } else if (selectedItem.equalsIgnoreCase(SCREEN_2_NAME)){
+        } else if (!strcmp(selectedItem,SCREEN_2_NAME)){
           // hide the list
           lv_obj_add_flag(screenList, LV_OBJ_FLAG_HIDDEN);
           // activate screen 2
           lv_scr_load(Screen2);
           // attach screen list
           lv_obj_set_parent(screenList, Screen2);
-        } else if (selectedItem.equalsIgnoreCase(SCREEN_3_NAME)){
+        } else if (!strcmp(selectedItem,SCREEN_3_NAME)){
           // hide the list
           lv_obj_add_flag(screenList, LV_OBJ_FLAG_HIDDEN);
           // activate screen 3
           lv_scr_load(Screen3);
           // attach screen list
           lv_obj_set_parent(screenList, Screen3);
-        } else if (selectedItem.equalsIgnoreCase(SCREEN_4_NAME)){
+        } else if (!strcmp(selectedItem,SCREEN_4_NAME)){
           // hide the list
           lv_obj_add_flag(screenList, LV_OBJ_FLAG_HIDDEN);
           // activate screen 4
           lv_scr_load(Screen4);
           // attach screen list
           lv_obj_set_parent(screenList, Screen4);
-        } else if (selectedItem.equalsIgnoreCase(SCREEN_5_NAME)){
+        } else if (!strcmp(selectedItem,SCREEN_5_NAME)){
           // hide the list
           lv_obj_add_flag(screenList, LV_OBJ_FLAG_HIDDEN);
           // activate screen 5

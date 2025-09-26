@@ -1,4 +1,5 @@
 #define USBSerial Serial
+// #define SERIALDEBUG
 //#define N2KMESSAGETX // used if we want to send n2k messages
 
 // This files contains all the n2k stuff for this project
@@ -154,7 +155,7 @@ void doN2Kprocessing(){
   
   // now parse any rx'd messages here
   NMEA2000.ParseMessages();
-
+  
   // grab the number of devices on the bus
   if (startUpDelayDone == true) {
     // update if the list changes

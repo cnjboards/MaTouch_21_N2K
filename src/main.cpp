@@ -21,6 +21,8 @@
 #include "matouch-display.h"
 #include "matouch-simulate.h"
 #include <WebServer.h>
+#include "matouch_expio.h"
+#include "TCA9554.h"
 
 // define how long to wait 
 #define STARTUPDELAY 5000
@@ -55,7 +57,8 @@ u_int32_t chipId;
 // forward declarations
 void pin_init();
 void encoder_irq();
-void checkButton(void);
+void checkButton();
+void i2c_scan();
 
 // externs from otaWeb
 extern void otaSetup(void);
@@ -89,7 +92,14 @@ void setup() {
 
   // I2C setup
   Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
-  Serial.printf ( "Wire Setup done");
+   
+  // debug code
+  //i2c_scan();
+
+  // I2C setup Expansion connector
+  expIOInit();
+  // log completion
+  Serial.println ( "I2C Wire Setup done");
 
   // setup N2K
   #ifdef N2KENABLE
@@ -130,7 +140,7 @@ void loop() {
 
   // process N2K
   #ifdef N2KENABLE
-  doN2Kprocessing();
+   doN2Kprocessing();
   #endif
 
   // only update display if not uploading, display glitches during the upload
@@ -237,3 +247,32 @@ void encoder_irq()
   old_State = State; // the first position was changed
   move_flag = 1;
 } // end encoder_irq
+
+byte i2c_try_address(byte address) {
+  Wire.beginTransmission(address);
+  return Wire.endTransmission();
+} // end i2c_try_address
+
+void i2c_scan() {
+  byte error, address;
+  int nDevices;
+ 
+  Serial.println("Scanning I2C...");
+ 
+  nDevices = 0;
+  for(address = 1; address < 127; address++ )  {
+    error = i2c_try_address(address);
+    if(error == 0) {
+      Serial.printf("I2C device found at address 0x%0x\n", address);
+      //i2c_identify(address);
+      nDevices++;
+    } else if(error==4) {
+      Serial.printf("Unknown error at address 0x%0x\n", address);
+    } // end if
+  } // end for
+
+  if(nDevices == 0)
+    Serial.println("No I2C devices found\n");
+  else
+    Serial.println("done\n");
+} // end i2c_scan
